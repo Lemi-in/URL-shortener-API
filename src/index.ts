@@ -1,8 +1,9 @@
 import express from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import cors from 'cors';
+import dotenv from 'dotenv';
+import { connectDB } from './db/connect';
 import shortenRoutes from './routes/shorten';
+import { handleRedirect } from './controllers/redirectController';
 
 dotenv.config();
 const app = express();
@@ -12,20 +13,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/shorten', shortenRoutes);
+app.get('/:shortId', handleRedirect);
 
-app.get('/:shortId', async (req, res) => {
-  const Url = (await import('./models/Url')).default;
-  const found = await Url.findOne({ shortId: req.params.shortId });
-  if (found) {
-    return res.redirect(found.originalUrl);
-  }
-  return res.status(404).send('URL not found');
+connectDB().then(() => {
+  app.listen(port, () => console.log(`Server running on port ${port}`));
 });
-
-mongoose
-  .connect(process.env.MONGO_URI!)
-  .then(() => {
-    console.log('MongoDB connected');
-    app.listen(port, () => console.log(`Server running on port ${port}`));
-  })
-  .catch(err => console.error(err));
