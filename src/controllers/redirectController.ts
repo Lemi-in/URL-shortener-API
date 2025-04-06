@@ -6,8 +6,8 @@ export const handleRedirect = async (req: Request, res: Response): Promise<void>
   const found = await Url.findOne({ shortId });
 
   if (found) {
-    return res.redirect(found.originalUrl);
+    console.log( res.redirect(found.originalUrl));
   }
 
-  return res.status(404).send('URL not found');
+  console.log( res.status(404).send('URL not found'));
 };
