@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Url from '../models/Url';
+import Url from '../models/Url.js';
 import { nanoid } from 'nanoid';
 
 export const createShortUrl = async (req: Request, res: Response) => {
